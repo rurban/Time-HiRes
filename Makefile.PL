@@ -120,7 +120,7 @@ EOD
 
     print "Looking for usleep()...\n";
     if (has_x ("usleep (0)")) {
-#	$DEFINE .= ' -DHAS_USLEEP';
+	$DEFINE .= ' -DHAS_USLEEP';
 	print "You have usleep()\n\n";
     } else {
 	print "Whoops! No usleep()! Let's see if you have select().\n";
@@ -133,7 +133,7 @@ EOD
 
     print "Looking for ualarm()...\n";
     if (has_x ("ualarm (0, 0)")) {
-#	$DEFINE .= ' -DHAS_UALARM';
+	$DEFINE .= ' -DHAS_UALARM';
 	print "You have ualarm()\n\n";
     } else {
 	print "Whoops! No ualarm()! We'll manage.\n\n";
@@ -152,7 +152,7 @@ WriteMakefile(
     'VERSION_FROM' => 'HiRes.pm', # finds $VERSION
     'LIBS'	=> $LIBS,   # e.g., '-lm' 
     'DEFINE'	=> $DEFINE,     # e.g., '-DHAS_SOMETHING' 
-    'XSPROTOARG'	=> '-noprototypes', 
+    'XSOPT'	=> '-nolinenumbers', 
 # do not even think about 'INC' => '-I/usr/ucbinclude', Solaris will avenge.
     'INC'	=> '',     # e.g., '-I/usr/include/other' 
     'dist'      => {
@@ -175,7 +175,7 @@ EOM
     doMakefile;
 print  <<EOM;
 
-Done configuringe
+Done configuring
 
 Now you may issue 'make'. Do not forget also 'make test'.
 

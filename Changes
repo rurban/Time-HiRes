@@ -1,5 +1,17 @@
 Revision history for Perl extension Time::HiRes.
 
+1.12  Sun Oct 12 12:00:00 1997
+	- Makefile.PL: set XSOPT to '-nolinenumbers' to work around xsubpp bug;
+	  you may need to comment this back out if you have an older xsubpp.
+	- HiRes.xs: set PROTOTYPES: DISABLE
+
+1.11  Fri Sep 05 16:00:00 1997
+	- Makefile.PL:
+	  Had some line commented out that shouldn't have been (testing
+	  remnants)
+	- README:
+	  Previous version was corrupted.
+
 1.10  Thu May 22 20:20:00 1997
 	- HiRes.xs, HiRes.pm, t/*:
 	      -	only compile what we have OS support for (or can 

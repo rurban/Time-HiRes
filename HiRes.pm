@@ -11,7 +11,7 @@ require DynaLoader;
 @EXPORT = qw( );
 @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval);
 
-$VERSION = do{my@r=q$Revision: 1.10 $=~/\d+/g;sprintf '%02d.'.'%02d'x$#r,@r};
+$VERSION = do{my@r=q$Revision: 1.12 $=~/\d+/g;sprintf '%02d.'.'%02d'x$#r,@r};
 
 bootstrap Time::HiRes $VERSION;
 
@@ -163,14 +163,18 @@ J. Hietaniemi <jhi@iki.fi>
 
 =head1 REVISION
 
-$Id: HiRes.pm,v 1.10 1997/05/23 01:11:38 wegscd Exp $
+$Id: HiRes.pm,v 1.12 1997/10/13 20:55:33 wegscd Exp $
 
 $Log: HiRes.pm,v $
+Revision 1.12  1997/10/13 20:55:33  wegscd
+Force a new version for Makefile.PL changes.
+
+Revision 1.11  1997/09/05 19:59:33  wegscd
+New version to bump version for README and Makefile.PL fixes.
+Fix bad RCS log.
+
 Revision 1.10  1997/05/23 01:11:38  wegscd
 Conditional compilation; EXPORT_FAIL fixes.
-
-Revision 1.10  1997/05/23 00:53:19  wegscd
-Add conditional compilation, fix EXPORT_FAIL, misc cleanup.
 
 Revision 1.2  1996/12/30 13:28:40  wegscd
 Update documentation for what to do when missing ualarm() and friends.

@@ -9,8 +9,9 @@ extern "C" {
 }
 #endif
 
-
 MODULE = Time::HiRes            PACKAGE = Time::HiRes
+
+PROTOTYPES: DISABLE
 
 #include "config.h"
 
@@ -95,9 +96,12 @@ time()
 
 #endif
 
-# $Id: HiRes.xs,v 1.2 1997/05/23 01:01:38 wegscd Exp $
+# $Id: HiRes.xs,v 1.3 1997/10/13 20:56:15 wegscd Exp wegscd $
 
 # $Log: HiRes.xs,v $
+# Revision 1.3  1997/10/13 20:56:15  wegscd
+# Add PROTOTYPES: DISABLE
+#
 # Revision 1.2  1997/05/23 01:01:38  wegscd
 # Conditional compilation, depending on what the OS gives us.
 #
