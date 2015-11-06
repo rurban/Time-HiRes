@@ -4,9 +4,9 @@
       "Jarkko Hietaniemi <jhi@iki.fi>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 7.0401, CPAN::Meta::Converter version 2.150005",
+   "generated_by" : "ExtUtils::MakeMaker version 7.1, CPAN::Meta::Converter version 2.150005",
    "license" : [
-      "unknown"
+      "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
@@ -38,11 +38,12 @@
             "Exporter" : "0",
             "ExtUtils::MakeMaker" : "0",
             "Test::More" : "0.82",
+            "perl" : "5.008",
             "strict" : "0"
          }
       }
    },
    "release_status" : "testing",
-   "version" : "1.9727_02",
+   "version" : "1.9727_03",
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }
