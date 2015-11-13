@@ -26,5 +26,5 @@ requires:
   Test::More: '0.82'
   perl: '5.008'
   strict: '0'
-version: 1.9727_03
+version: '1.9728'
 x_serialization_backend: 'CPAN::Meta::YAML version 0.017'
