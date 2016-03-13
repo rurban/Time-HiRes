@@ -485,12 +485,6 @@ hrt_ualarm_itimero(struct itimerval *oitv, int usec, int uinterval)
    return setitimer(ITIMER_REAL, &itv, oitv);
 }
 
-static int
-hrt_ualarm_itimer(int usec, int uinterval)
-{
-  return hrt_ualarm_itimero(NULL, usec, uinterval);
-}
-
 #endif /* #if !defined(HAS_UALARM) && defined(HAS_SETITIMER) */
 
 #if !defined(HAS_UALARM) && defined(HAS_SETITIMER)
@@ -774,7 +768,7 @@ static struct timespec timespec_init;
 
 static int darwin_time_init() {
 #ifdef USE_ITHREADS
-  PERL_MUTEX_LOCK(&darwin_time_mutex);
+  MUTEX_LOCK(&darwin_time_mutex);
 #endif
   struct timeval tv;
   int success = 1;
@@ -791,7 +785,7 @@ static int darwin_time_init() {
     }
   }
 #ifdef USE_ITHREADS
-  PERL_MUTEX_UNLOCK(&darwin_time_mutex);
+  MUTEX_UNLOCK(&darwin_time_mutex);
 #endif
   return success;
 }
@@ -945,6 +939,11 @@ BOOT:
 		newSViv(PTR2IV(myU2time)), 0);
   }
 #   endif
+#endif
+#if defined(PERL_DARWIN)
+#  ifdef USE_ITHREADS
+  MUTEX_INIT(&darwin_time_mutex);
+#  endif
 #endif
 }
 
