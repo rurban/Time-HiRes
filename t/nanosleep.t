@@ -22,7 +22,7 @@ my $two = CORE::time;
 Time::HiRes::nanosleep(10_000_000);
 my $three = CORE::time;
 ok $one == $two || $two == $three
-    or print("# slept too long, $one $two $three\n");
+    or note "slept too long, $one $two $three";
 
 SKIP: {
     skip "no gettimeofday", 2 unless &Time::HiRes::d_gettimeofday;
