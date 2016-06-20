@@ -22,6 +22,7 @@ t/time.t		Test for Time::HiRes::time
 t/tv_interval.t		Test for two-arg Time::HiRes::tv_interval
 t/ualarm.t		Test for Time::HiRes::ualarm
 t/usleep.t		Test for Time::HiRes::usleep
+t/utime.t		Test for Time::HiRes::utime
 HiRes.xs		Time::HiRes extension
 Makefile.PL		Time::HiRes extension
 MANIFEST		Time::HiRes extension
