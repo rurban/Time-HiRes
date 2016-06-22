@@ -4,7 +4,15 @@ BEGIN {
     require Time::HiRes;
     unless(&Time::HiRes::d_hires_utime) {
 	require Test::More;
-	Test::More::plan(skip_all => "no hires_utime()");
+	Test::More::plan(skip_all => "no hires_utime");
+    }
+    unless (&Time::HiRes::d_futimens) {
+	require Test::More;
+	Test::More::plan(skip_all => "no futimens()");
+    }
+    unless (&Time::HiRes::d_utimensat) {
+	require Test::More;
+	Test::More::plan(skip_all => "no utimensat()");
     }
 }
 

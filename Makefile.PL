@@ -947,7 +947,8 @@ sub doConstants {
                       );
 	foreach (qw (d_usleep d_ualarm d_gettimeofday d_getitimer d_setitimer
 		     d_nanosleep d_clock_gettime d_clock_getres
-		     d_clock d_clock_nanosleep d_hires_stat d_hires_utime)) {
+		     d_clock d_clock_nanosleep d_hires_stat
+                     d_futimens d_utimensat d_hires_utime)) {
 	    my $macro = $_;
 	    if ($macro =~ /^(d_nanosleep|d_clock)$/) {
 		$macro =~ s/^d_(.+)/TIME_HIRES_\U$1/;
@@ -957,14 +958,19 @@ sub doConstants {
 		push @names, {name => $_, macro => "TIME_HIRES_STAT", value => $d_hires_stat,
 			      default => ["IV", "0"]};
 		next;
+	    } elsif ($macro =~ /^(d_hires_utime)$/) {
+		my $d_hires_utime =
+                    ($DEFINE =~ /-DHAS_FUTIMENS/ ||
+                     $DEFINE =~ /-DHAS_UTIMENSAT/) ? 1 : 0;
+		push @names, {name => $_, macro => "TIME_HIRES_UTIME", value => $d_hires_utime,
+			      default => ["IV", "0"]};
+		next;
 	    } elsif ($macro =~ /^(d_clock_gettime|d_clock_getres|d_clock_nanosleep)$/) {
 		$macro =~ s/^d_(.+)/TIME_HIRES_\U$1/;
 		my $val = ($DEFINE =~ /-D$macro\b/) ? 1 : 0;
 		push @names, {name => $_, macro => $macro, value => $val,
 			      default => ["IV", "0"]};
 		next;
-	    } elsif ($macro =~ /^(d_hires_.*)$/) {
-		$macro =~ s/^d_(.+)/TIME_\U$1/;
 	    } else {
 		$macro =~ s/^d_(.+)/HAS_\U$1/;
 	    }

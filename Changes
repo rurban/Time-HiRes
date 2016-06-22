@@ -1,13 +1,22 @@
 Revision history for the Perl extension Time::HiRes.
 
-1.9735 [2016-07-21]
-  - Time::HiRes should override `utime` to allow setting hires
-    (use futimens and utimensat to implement subsecond utime)
-    [rt.perl.org #114809]
-  - the utime patch uses IS_SAFE_PATHNAME() which isn't available in
-    too old Perls, so emulate (in case the Devel::PPPort is too old)
+1.9736 [2016-07-22]
+  - the IS_SAFE_PATHNAME() emulation was too modern for Perl 5.10
   - make it so that only one value is set for -DTIME_HIRES_STAT
     even on systems that support many options
+  - the 1.9734 (only released in blead, and as part of the development
+    release 5.25.2) fix for Darwin's clock_gettime was wrong under
+    threaded builds, leading into mutex panics in clock.t 
+  - the d_hires_utime determination was made more precise
+  - the utime.t was failing in platforms where only one of
+    futimens/utimensat was present (neither or both was okay)
+
+1.9735 [2016-07-20]
+  - Time::HiRes should override `utime` to allow setting hires
+    (futimens and utimensat support)
+    [rt.perl.org #114809]
+  - the utime patch used IS_SAFE_PATHNAME() which isn't available in
+    too old Perls, so emulate (in case the Devel::PPPort is too old)
 
 1.9734 [2016-07-17]
   - fix Darwins with clock_gettime: blead 2d41a263

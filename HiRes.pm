@@ -28,7 +28,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 stat lstat utime
 		);
 
-our $VERSION = '1.9735';
+our $VERSION = '1.9736';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
@@ -139,7 +139,7 @@ Time::HiRes - High resolution alarm, sleep, gettimeofday, interval timers
   my @stat = lstat("file");
 
   use Time::HiRes qw( utime );
-  utime $floating_seconds_atime, $floating_seconds_mtime, $file...;
+  utime $floating_seconds, $floating_seconds, file...;
 
 =head1 DESCRIPTION
 
@@ -452,10 +452,10 @@ time stamp from t1: it may be equal or I<less>.
 
 =item utime LIST
 
-As L<perlfunc/utime> but with the ability to set the access/modify
-file timestamps in subsecond resolution, if the operating system and
-the filesystem both support such timestamps.  To override the standard
-utime():
+As L<perlfunc/utime>
+but with the ability to set the access/modify file timestamps
+in subsecond resolution, if the operating system and the filesystem
+both support such timestamps.  To override the standard utime():
 
     use Time::HiRes qw(utime);
 

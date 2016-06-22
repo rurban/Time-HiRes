@@ -756,9 +756,13 @@ hrstatns(UV *atime_nsec, UV *mtime_nsec, UV *ctime_nsec)
 #  define CLOCK_REALTIME  0x01
 #  define CLOCK_MONOTONIC 0x02
 
+#  ifdef USE_ITHREADS
+#    define PERL_DARWIN_MUTEX
+#  endif
+
 #  define TIMER_ABSTIME   0x01
 
-#ifdef USE_ITHREADS
+#ifdef PERL_DARWIN_MUTEX
 STATIC perl_mutex darwin_time_mutex;
 #endif
 
@@ -769,7 +773,7 @@ static struct timespec timespec_init;
 static int darwin_time_init() {
   struct timeval tv;
   int success = 1;
-#ifdef USE_ITHREADS
+#ifdef PERL_DARWIN_MUTEX
   MUTEX_LOCK(&darwin_time_mutex);
 #endif
   if (absolute_time_init == 0) {
@@ -784,7 +788,7 @@ static int darwin_time_init() {
       }
     }
   }
-#ifdef USE_ITHREADS
+#ifdef PERL_DARWIN_MUTEX
   MUTEX_UNLOCK(&darwin_time_mutex);
 #endif
   return success;
@@ -923,8 +927,18 @@ nsec_without_unslept(struct timespec *sleepfor,
 
 /* In case Perl and/or Devel::PPPort are too old, minimally emulate
  * IS_SAFE_PATHNAME() (which looks for zero bytes in the pathname). */
- #ifndef IS_SAFE_PATHNAME
-#define IS_SAFE_PATHNAME(pv, len, opname) (((len)>1)&&memchr((pv), 0, (len)-1)?(SETERRNO(ENOENT, LIB_INVARG),Perl_ck_warner(aTHX_ packWARN(WARN_MISC), "Invalid \\0 character in pathname for %s",opname),FALSE):(TRUE))
+#ifndef IS_SAFE_PATHNAME
+#if PERL_VERSION >= 10 /* Perl_ck_warner is 5.10.0 -> */
+#ifdef WARN_SYSCALLS
+#define WARNEMUCAT WARN_SYSCALLS /* 5.22.0 -> */
+#else
+#define WARNEMUCAT WARN_MISC
+#endif
+#define WARNEMU(opname) Perl_ck_warner(aTHX_ packWARN(WARNEMUCAT), "Invalid \\0 character in pathname for %s",opname)
+#else
+#define WARNEMU(opname) Perl_warn(aTHX_ "Invalid \\0 character in pathname for %s",opname)
+#endif
+#define IS_SAFE_PATHNAME(pv, len, opname) (((len)>1)&&memchr((pv), 0, (len)-1)?(SETERRNO(ENOENT, LIB_INVARG),WARNEMU(opname),FALSE):(TRUE))
 #endif
 
 MODULE = Time::HiRes            PACKAGE = Time::HiRes
@@ -946,8 +960,8 @@ BOOT:
   }
 #   endif
 #endif
-#if defined(PERL_DARWIN) && !defined(CLOCK_REALTIME)
-#  ifdef USE_ITHREADS
+#if defined(PERL_DARWIN)
+#  if defined(USE_ITHREADS) && defined(PERL_DARWIN_MUTEX)
   MUTEX_INIT(&darwin_time_mutex);
 #  endif
 #endif
