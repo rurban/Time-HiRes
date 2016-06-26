@@ -2,30 +2,33 @@ use strict;
 
 BEGIN {
     require Time::HiRes;
+    require Test::More;
     unless(&Time::HiRes::d_hires_utime) {
-	require Test::More;
 	Test::More::plan(skip_all => "no hires_utime");
     }
     unless (&Time::HiRes::d_futimens) {
-	require Test::More;
 	Test::More::plan(skip_all => "no futimens()");
     }
     unless (&Time::HiRes::d_utimensat) {
-	require Test::More;
 	Test::More::plan(skip_all => "no utimensat()");
+    }
+    if ($^O eq 'gnukfreebsd') {
+	Test::More::plan(skip_all => "futimens() and utimensat() not working in $^O");
     }
 }
 
-use Test::More;
+use Test::More tests => 18;
 use t::Watchdog;
 use File::Temp qw( tempfile );
 
 use Config;
 
-my $atime = 1.111111111;
-my $mtime = 2.222222222;
+# Cygwin timestamps have less precision.
+my $atime = $^O eq 'cygwin' ? 1.1111111 : 1.111111111;
+my $mtime = $^O eq 'cygwin' ? 2.2222222 : 2.222222222;
 
-subtest "utime \$fh" => sub {
+print "# utime \$fh\n";
+{
 	my ($fh, $filename) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 	is Time::HiRes::utime($atime, $mtime, $fh), 1, "One file changed";
 	my ($got_atime, $got_mtime) = ( Time::HiRes::stat($filename) )[8, 9];
@@ -33,7 +36,8 @@ subtest "utime \$fh" => sub {
 	is $got_mtime, $mtime, "mtime set correctly";
 };
 
-subtest "utime \$filename" => sub {
+print "#utime \$filename\n";
+{
 	my ($fh, $filename) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 	is Time::HiRes::utime($atime, $mtime, $filename), 1, "One file changed";
 	my ($got_atime, $got_mtime) = ( Time::HiRes::stat($fh) )[8, 9];
@@ -41,7 +45,8 @@ subtest "utime \$filename" => sub {
 	is $got_mtime, $mtime, "mtime set correctly";
 };
 
-subtest "utime \$filename and \$fh" => sub {
+print "utime \$filename and \$fh\n";
+{
 	my ($fh1, $filename1) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 	my ($fh2, $filename2) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 	is Time::HiRes::utime($atime, $mtime, $filename1, $fh2), 2, "Two files changed";
@@ -57,7 +62,8 @@ subtest "utime \$filename and \$fh" => sub {
 	}
 };
 
-subtest "utime undef sets time to now" => sub {
+print "# utime undef sets time to now\n";
+{
 	my ($fh1, $filename1) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 	my ($fh2, $filename2) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 
@@ -76,17 +82,20 @@ subtest "utime undef sets time to now" => sub {
 	}
 };
 
-subtest "negative atime dies" => sub {
+print "# negative atime dies\n";
+{
 	eval { Time::HiRes::utime(-4, $mtime) };
 	like $@, qr/::utime\(-4, 2\.22222\): negative time not invented yet/,
 		"negative time error";
 };
 
-subtest "negative mtime dies" => sub {
+print "# negative mtime dies;\n";
+{
 	eval { Time::HiRes::utime($atime, -4) };
 	like $@, qr/::utime\(1.11111, -4\): negative time not invented yet/,
 		"negative time error";
 };
 
 done_testing;
+
 1;

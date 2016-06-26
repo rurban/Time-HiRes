@@ -28,7 +28,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 stat lstat utime
 		);
 
-our $VERSION = '1.9737';
+our $VERSION = '1.9738';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
@@ -465,6 +465,9 @@ the operating system supports setting subsecond file timestamps.
 As with CORE::utime(), passing undef as both the atime and mtime will
 call the syscall with a NULL argument.
 
+The actual achievable subsecond resolution depends on the combination
+of the operating system and the filesystem.
+
 Returns the number of files successfully changed.
 
 =back
@@ -607,9 +610,13 @@ might help in this (in case your system supports CLOCK_MONOTONIC).
 Some systems have APIs but not implementations: for example QNX and Haiku
 have the interval timer APIs but not the functionality.
 
-In OS X clock_getres(), clock_gettime() and clock_nanosleep() are
-emulated using the Mach timers; as a side effect of being emulated
-the CLOCK_REALTIME and CLOCK_MONOTONIC are the same timer.
+In pre-Sierra macOS (pre-10.12, OS X) clock_getres(), clock_gettime()
+and clock_nanosleep() are emulated using the Mach timers; as a side
+effect of being emulated the CLOCK_REALTIME and CLOCK_MONOTONIC are
+the same timer.
+
+gnukfreebsd seems to have non-functional futimens() and utimensat()
+(at least as of 10.1): therefore the hires utime() does not work.
 
 =head1 SEE ALSO
 

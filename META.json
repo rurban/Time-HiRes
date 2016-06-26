@@ -37,13 +37,13 @@
             "DynaLoader" : "0",
             "Exporter" : "0",
             "ExtUtils::MakeMaker" : "0",
-            "Test::More" : "0.82",
+            "Test::More" : "0",
             "perl" : "5.008",
             "strict" : "0"
          }
       }
    },
    "release_status" : "stable",
-   "version" : "1.9737",
+   "version" : "1.9738",
    "x_serialization_backend" : "JSON::PP version 2.27300"
 }

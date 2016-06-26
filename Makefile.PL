@@ -869,7 +869,7 @@ sub doMakefile {
 	    'DynaLoader' => 0,
 	    'Exporter' => 0,
 	    'ExtUtils::MakeMaker' => 0,
-	    'Test::More' => "0.82",
+	    'Test::More' => 0,
 	    'strict' => 0,
 	},
 	'dist'      => {
