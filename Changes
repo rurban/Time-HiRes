@@ -1,5 +1,10 @@
 Revision history for the Perl extension Time::HiRes.
 
+1.9739 [2016-06-28]
+  - the upcoming macOS 10.12 (Sierra, the operating system formerly
+    known as OS X, or Darwin) has implemented the clock_gettime()
+    and clock_getres() interfaces but not the clock_nanosleep()
+
 1.9738 [2016-06-26]
   - fix the dates in the Changes, it's not July yet
     [rt.cpan.org #115553]

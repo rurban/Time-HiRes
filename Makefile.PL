@@ -583,7 +583,7 @@ EOD
     } elsif ($^O eq 'darwin') {
        $has_clock_gettime_emulation++;
        $has_clock_gettime++;
-       $DEFINE .= ' -DTIME_HIRES_CLOCK_GETTIME';
+       $DEFINE .= ' -DTIME_HIRES_CLOCK_GETTIME -DTIME_HIRES_CLOCK_GETTIME_EMULATION';
     }
 
     if ($has_clock_gettime) {
@@ -612,7 +612,7 @@ EOD
     } elsif ($^O eq 'darwin') {
        $has_clock_getres_emulation++;
        $has_clock_getres++;
-       $DEFINE .= ' -DTIME_HIRES_CLOCK_GETRES';
+       $DEFINE .= ' -DTIME_HIRES_CLOCK_GETRES -DTIME_HIRES_CLOCK_GETRES_EMULATION';
     }
 
     if ($has_clock_getres) {
@@ -638,7 +638,7 @@ EOD
     } elsif ($^O eq 'darwin') {
         $has_clock_nanosleep++;
         $has_clock_nanosleep_emulation++;
-	$DEFINE .= ' -DTIME_HIRES_CLOCK_NANOSLEEP';
+	$DEFINE .= ' -DTIME_HIRES_CLOCK_NANOSLEEP -DTIME_HIRES_CLOCK_NANOSLEEP_EMULATION';
     }
 
     if ($has_clock_nanosleep) {

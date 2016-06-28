@@ -747,24 +747,32 @@ hrstatns(UV *atime_nsec, UV *mtime_nsec, UV *ctime_nsec)
 #endif /* !TIME_HIRES_STAT */
 }
 
-/* Until Apple implements clock_gettime() (ditto clock_getres())
- * we will emulate it using Mach interfaces. */
-#if defined(PERL_DARWIN) && !defined(CLOCK_REALTIME)
+/* Until Apple implements clock_gettime()
+ * (ditto clock_getres() and clock_nanosleep())
+ * we will emulate them using the Mach kernel interfaces. */
+#if defined(PERL_DARWIN) && \
+  (defined(TIME_HIRES_CLOCK_GETTIME_EMULATION)   || \
+   defined(TIME_HIRES_CLOCK_GETRES_EMULATION)    || \
+   defined(TIME_HIRES_CLOCK_NANOSLEEP_EMULATION))
 
-#  include <mach/mach_time.h>
-
+#ifndef CLOCK_REALTIME
 #  define CLOCK_REALTIME  0x01
 #  define CLOCK_MONOTONIC 0x02
+#endif
 
-#  ifdef USE_ITHREADS
-#    define PERL_DARWIN_MUTEX
-#  endif
-
+#ifndef TIMER_ABSTIME
 #  define TIMER_ABSTIME   0x01
+#endif
+
+#ifdef USE_ITHREADS
+#  define PERL_DARWIN_MUTEX
+#endif
 
 #ifdef PERL_DARWIN_MUTEX
 STATIC perl_mutex darwin_time_mutex;
 #endif
+
+#include <mach/mach_time.h>
 
 static uint64_t absolute_time_init;
 static mach_timebase_info_data_t timebase_info;
@@ -794,6 +802,7 @@ static int darwin_time_init() {
   return success;
 }
 
+#ifdef TIME_HIRES_CLOCK_GETTIME_EMULATION
 static int clock_gettime(int clock_id, struct timespec *ts) {
   if (darwin_time_init() && timebase_info.denom) {
     switch (clock_id) {
@@ -825,7 +834,9 @@ static int clock_gettime(int clock_id, struct timespec *ts) {
   SETERRNO(EINVAL, LIB_INVARG);
   return -1;
 }
+#endif /* TIME_HIRES_CLOCK_GETTIME_EMULATION */
 
+#ifdef TIME_HIRES_CLOCK_GETRES_EMULATION
 static int clock_getres(int clock_id, struct timespec *ts) {
   if (darwin_time_init() && timebase_info.denom) {
     switch (clock_id) {
@@ -845,7 +856,9 @@ static int clock_getres(int clock_id, struct timespec *ts) {
   SETERRNO(EINVAL, LIB_INVARG);
   return -1;
 }
+#endif /* TIME_HIRES_CLOCK_GETRES_EMULATION */
 
+#ifdef TIME_HIRES_CLOCK_NANOSLEEP_EMULATION
 static int clock_nanosleep(int clock_id, int flags,
 			   const struct timespec *rqtp,
 			   struct timespec *rmtp) {
@@ -883,6 +896,7 @@ static int clock_nanosleep(int clock_id, int flags,
   SETERRNO(EINVAL, LIB_INVARG);
   return -1;
 }
+#endif /* TIME_HIRES_CLOCK_NANOSLEEP_EMULATION */
 
 #endif /* PERL_DARWIN */
 
