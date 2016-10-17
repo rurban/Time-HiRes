@@ -119,7 +119,42 @@ BEGIN {
 	Test::More::plan(skip_all => "no utimensat()");
     }
     unless (has_subsecond_file_times()) {
-	Test::More::plan(skip_all => "No subsecond file timestamps");
+        Test::More::plan(skip_all => "No subsecond file timestamps");
+    }
+    if ($^O eq 'gnukfreebsd') {
+	Test::More::plan(skip_all => "futimens() and utimensat() not working in $^O");
+    }
+    if ($^O eq 'linux' && -e '/proc/mounts') {
+        # The linux might be wrong when ext3
+        # is available in other operating systems,
+        # but then we need other methods for detecting
+        # the filesystem type of the tempfiles.
+        my ($fh, $fn) = File::Temp::tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1);
+        sub getfstype {
+            my ($fn) = @_;
+            my $cmd = "df $fn";
+            open(my $df, '-|', $cmd) or die "$cmd: $!";
+             my @df = <$df>;  # Assume $df[0] is header line.
+             my $dev = +(split(" ", $df[1]))[0];
+             open(my $mounts, '<', '/proc/mounts') or die "/proc/mounts: $!";
+             while (<$mounts>) {
+                 my @m = split(" ");
+                 if ($m[0] eq $dev) { return $m[2] }
+             }
+             return;
+          }
+          my $fstype = getfstype($fn);
+          unless (defined $fstype) {
+              warn "Unknown fstype for $fn\n";
+          } else {
+              print "# fstype = $fstype\n";
+              if ($fstype eq 'ext3' || $fstype eq 'ext2') {
+                  Test::More::plan(skip_all => "fstype $fstype has no subsecond timestamps in $^O");
+              }
+          }
+    }
+    if ($^O eq 'linux' && $ENV{GITLAB_CI}) {
+        Test::More::plan(skip_all => "gitlab smoker [cperl #212]");
     }
 }
 
