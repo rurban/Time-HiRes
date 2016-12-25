@@ -1451,12 +1451,12 @@ setitimer(which, seconds, interval = 0)
          */
         GCC_DIAG_IGNORE_STMT(-Wc++-compat);
 	if (setitimer(which, &newit, &oldit) == 0) {
-	  EXTEND(sp, 1);
-	  PUSHs(sv_2mortal(newSVnv(TV2NV(oldit.it_value))));
-	  if (GIMME == G_ARRAY) {
-	    EXTEND(sp, 1);
-	    PUSHs(sv_2mortal(newSVnv(TV2NV(oldit.it_interval))));
-	  }
+            EXTEND(sp, 1);
+            PUSHs(sv_2mortal(newSVnv(TV2NV(oldit.it_value))));
+            if (GIMME == G_ARRAY) {
+                EXTEND(sp, 1);
+                PUSHs(sv_2mortal(newSVnv(TV2NV(oldit.it_interval))));
+            }
 	}
         GCC_DIAG_RESTORE_STMT;
 
@@ -1471,12 +1471,12 @@ getitimer(which)
          */
         GCC_DIAG_IGNORE_STMT(-Wc++-compat);
 	if (getitimer(which, &nowit) == 0) {
-	  EXTEND(sp, 1);
-	  PUSHs(sv_2mortal(newSVnv(TV2NV(nowit.it_value))));
-	  if (GIMME == G_ARRAY) {
-	    EXTEND(sp, 1);
-	    PUSHs(sv_2mortal(newSVnv(TV2NV(nowit.it_interval))));
-	  }
+            EXTEND(sp, 1);
+            PUSHs(sv_2mortal(newSVnv(TV2NV(nowit.it_value))));
+            if (GIMME == G_ARRAY) {
+                EXTEND(sp, 1);
+                PUSHs(sv_2mortal(newSVnv(TV2NV(nowit.it_interval))));
+            }
 	}
         GCC_DIAG_RESTORE_STMT;
 
@@ -1491,68 +1491,67 @@ PROTOTYPE: $$@
 	SV* accessed;
 	SV* modified;
 	SV* file;
-
 	struct timespec utbuf[2];
 	struct timespec *utbufp = utbuf;
 	int tot;
-
     CODE:
 	accessed = ST(0);
 	modified = ST(1);
 	items -= 2;
 	tot = 0;
 
-	if ( accessed == &PL_sv_undef && modified == &PL_sv_undef )
-		utbufp = NULL;
-	else {
-		if (SvNV(accessed) < 0.0 || SvNV(modified) < 0.0)
-                    croak("Time::HiRes::utime(%" NVgf ", %" NVgf
-                          "): negative time not invented yet",
-                              SvNV(accessed), SvNV(modified));
-		Zero(&utbuf, sizeof utbuf, char);
-		utbuf[0].tv_sec = (Time_t)SvNV(accessed);  /* time accessed */
-		utbuf[0].tv_nsec = (long)( ( SvNV(accessed) - utbuf[0].tv_sec ) * 1e9 );
-		utbuf[1].tv_sec = (Time_t)SvNV(modified);  /* time modified */
-		utbuf[1].tv_nsec = (long)( ( SvNV(modified) - utbuf[1].tv_sec ) * 1e9 );
+        if ( accessed == &PL_sv_undef && modified == &PL_sv_undef ) {
+            utbufp = NULL;
+        } else {
+            if (SvNV(accessed) < 0.0 || SvNV(modified) < 0.0)
+                croak("Time::HiRes::utime(%" NVgf ", %" NVgf
+                      "): negative time not invented yet",
+                      SvNV(accessed), SvNV(modified));
+            Zero(&utbuf, sizeof utbuf, char);
+            utbuf[0].tv_sec = (Time_t)SvNV(accessed);  /* time accessed */
+            utbuf[0].tv_nsec = (long)( ( SvNV(accessed) - utbuf[0].tv_sec ) * 1e9 );
+            utbuf[1].tv_sec = (Time_t)SvNV(modified);  /* time modified */
+            utbuf[1].tv_nsec = (long)( ( SvNV(modified) - utbuf[1].tv_sec ) * 1e9 );
 	}
 
 	while (items > 0) {
-		file = POPs; items--;
+            file = POPs; items--;
 
-		if (SvROK(file) && GvIO(SvRV(file)) && IoIFP(sv_2io(SvRV(file)))) {
-			int fd =  PerlIO_fileno(IoIFP(sv_2io(file)));
-			if (fd < 0) {
-				SETERRNO(EBADF,RMS_IFI);
-	                } else {
+            if (SvROK(file) && GvIO(SvRV(file)) && IoIFP(sv_2io(SvRV(file)))) {
+                int fd =  PerlIO_fileno(IoIFP(sv_2io(file)));
+                if (fd < 0) {
+                    SETERRNO(EBADF,RMS_IFI);
+                }
+                else {
 #ifdef HAS_FUTIMENS
-                          if (FUTIMENS_AVAILABLE) {
-                            if (futimens(fd, utbufp) == 0) {
-                              tot++;
-                            }
-                          } else {
-                            croak("futimens unimplemented in this platform");
-                          }
-#else  /* HAS_FUTIMENS */
-			  croak("futimens unimplemented in this platform");
-#endif /* HAS_FUTIMENS */
+                    if (FUTIMENS_AVAILABLE) {
+                        if (futimens(fd, utbufp) == 0) {
+                            tot++;
                         }
-		}
-		else {
+                    } else {
+                        croak("futimens unimplemented in this platform");
+                    }
+#else  /* HAS_FUTIMES */
+                    croak("futimens unimplemented in this platform");
+#endif /* HAS_FUTIMES */
+                }
+            }
+            else {
 #ifdef HAS_UTIMENSAT
-	          if (UTIMENSAT_AVAILABLE) {
+                if (UTIMENSAT_AVAILABLE) {
                     STRLEN len;
                     char * name = SvPV(file, len);
                     if (IS_SAFE_PATHNAME(name, len, "utime") &&
                         utimensat(AT_FDCWD, name, utbufp, 0) == 0) {
-                      tot++;
+                        tot++;
                     }
-                  } else {
+                } else {
                     croak("utimensat unimplemented in this platform");
-                  }
+                }
 #else  /* HAS_UTIMENSAT */
-	          croak("utimensat unimplemented in this platform");
+                croak("utimensat unimplemented in this platform");
 #endif /* HAS_UTIMENSAT */
-		}
+            }
 	} /* while items */
 	RETVAL = tot;
 
@@ -1727,18 +1726,18 @@ PROTOTYPE: ;$
 	LEAVE;
 	nret = SP+1 - &ST(0);
 	if (nret == 13) {
-	  UV atime = SvUV(ST( 8));
-	  UV mtime = SvUV(ST( 9));
-	  UV ctime = SvUV(ST(10));
-	  UV atime_nsec;
-	  UV mtime_nsec;
-	  UV ctime_nsec;
-	  hrstatns(&atime_nsec, &mtime_nsec, &ctime_nsec);
-	  if (atime_nsec)
-	    ST( 8) = sv_2mortal(newSVnv(atime + (NV) atime_nsec / NV_1E9));
-	  if (mtime_nsec)
-	    ST( 9) = sv_2mortal(newSVnv(mtime + (NV) mtime_nsec / NV_1E9));
-	  if (ctime_nsec)
-	    ST(10) = sv_2mortal(newSVnv(ctime + (NV) ctime_nsec / NV_1E9));
+            UV atime = SvUV(ST( 8));
+            UV mtime = SvUV(ST( 9));
+            UV ctime = SvUV(ST(10));
+            UV atime_nsec;
+            UV mtime_nsec;
+            UV ctime_nsec;
+            hrstatns(&atime_nsec, &mtime_nsec, &ctime_nsec);
+            if (atime_nsec)
+                ST( 8) = sv_2mortal(newSVnv(atime + (NV) atime_nsec / NV_1E9));
+            if (mtime_nsec)
+                ST( 9) = sv_2mortal(newSVnv(mtime + (NV) mtime_nsec / NV_1E9));
+            if (ctime_nsec)
+                ST(10) = sv_2mortal(newSVnv(ctime + (NV) ctime_nsec / NV_1E9));
 	}
 	XSRETURN(nret);
