@@ -1,6 +1,7 @@
 use strict;
 
 use Test::More tests => 10;
+BEGIN { push @INC, '.' }
 use t::Watchdog;
 
 BEGIN { require_ok "Time::HiRes"; }
@@ -10,7 +11,7 @@ use Config;
 my $limit = 0.25; # 25% is acceptable slosh for testing timers
 
 my $xdefine = ''; 
-if (open(XDEFINE, "xdefine")) {
+if (open(XDEFINE, "<", "xdefine")) {
     chomp($xdefine = <XDEFINE> || "");
     close(XDEFINE);
 }
