@@ -1,5 +1,8 @@
 Revision history for the Perl extension Time::HiRes.
 
+1.9758_01 2018-09-06 rurban
+ - merge with our old cperl fixes
+
 1.9758 [2018-03-21]
  - fix build in Win32 with Visual C by introducing a fake struct timezone
    [rt.cpan.org #124844]

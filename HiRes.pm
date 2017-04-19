@@ -1,13 +1,12 @@
 package Time::HiRes;
 
-{ use 5.006; }
+use 5.006;
 use strict;
 
 require Exporter;
 use XSLoader ();
 
 our @ISA = qw(Exporter);
-
 our @EXPORT = qw( );
 # TODO: this list is a superset of the @names in
 # Makefile.PL:doConstants(), automate this somehow.
@@ -53,7 +52,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 stat lstat utime
 		);
 
-our $VERSION = '1.9758';
+our $VERSION = '1.9758_01';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
