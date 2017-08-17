@@ -109,17 +109,18 @@ print "# utime undef sets time to now\n";
 	my ($fh2, $filename2) = tempfile( "Time-HiRes-utime-XXXXXXXXX", UNLINK => 1 );
 
 	my $now = Time::HiRes::time;
+        sleep(1);
 	is Time::HiRes::utime(undef, undef, $filename1, $fh2), 2, "Two files changed";
 
 	{
 		my ($got_atime, $got_mtime) = ( Time::HiRes::stat($fh1) )[8, 9];
-		cmp_ok abs( $got_atime - $now), '<', 0.1, "File 1 atime set correctly";
-		cmp_ok abs( $got_mtime - $now), '<', 0.1, "File 1 mtime set correctly";
+		cmp_ok $got_atime, '>=', $now, "File 1 atime set correctly";
+		cmp_ok $got_mtime, '>=', $now, "File 1 mtime set correctly";
 	}
 	{
 		my ($got_atime, $got_mtime) = ( Time::HiRes::stat($filename2) )[8, 9];
-		cmp_ok abs( $got_atime - $now), '<', 0.1, "File 2 atime set correctly";
-		cmp_ok abs( $got_mtime - $now), '<', 0.1, "File 2 mtime set correctly";
+		cmp_ok $got_atime, '>=', $now, "File 2 atime set correctly";
+		cmp_ok $got_mtime, '>=', $now, "File 2 mtime set correctly";
 	}
 };
 

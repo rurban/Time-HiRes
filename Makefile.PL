@@ -859,13 +859,10 @@ EOM
         print "You seem to have subsecond timestamp reading.\n";
         print "(Your struct stat has them, but the filesystems must help.)\n";
         unless ($has_hires_utime) {
-            print "However, you do NOT seem to have subsecond timestamp setting.  This is a curious combination.\n";
+            print "However, you do NOT seem to have subsecond timestamp setting.\n";
         }
     } else {
         print "You do NOT seem to have subsecond timestamp reading.\n";
-        if ($has_hires_utime) {
-            print "However, you seem to have subsecond timestamp setting.  This is a curious combination.\n";
-        }
     }
 
     my $has_w32api_windows_h;
