@@ -1,5 +1,9 @@
 Revision history for the Perl extension Time::HiRes.
 
+1.9750 [2017-12-22]
+ - update META.yml and META.json for XSLoader instead of DynaLoader
+   [rt.cpan.org #123933]
+
 1.9749 [2017-12-21]
  - CPAN release
  - Quieten Time-HiRes test noise: blead 0f009486
