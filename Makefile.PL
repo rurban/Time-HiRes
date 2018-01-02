@@ -1008,9 +1008,11 @@ sub doConstants {
 		$macro =~ s/^d_(.+)/TIME_HIRES_\U$1/;
 	    } elsif ($macro =~ /^(d_hires_stat)$/) {
 		my $d_hires_stat = $1 if ($DEFINE =~ /-DTIME_HIRES_STAT=(\d+)/);
-		push @names, {name => $_, macro => "TIME_HIRES_STAT", value => $d_hires_stat,
-			      default => ["IV", "0"]};
-		next;
+                if (defined $d_hires_stat) {
+                    push @names, {name => $_, macro => "TIME_HIRES_STAT", value => $d_hires_stat,
+                                  default => ["IV", "0"]};
+                    next;
+                }
 	    } elsif ($macro =~ /^(d_hires_utime)$/) {
 		my $d_hires_utime =
 		    ($DEFINE =~ /-DHAS_FUTIMENS/ ||
