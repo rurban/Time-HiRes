@@ -1051,9 +1051,11 @@ sub doConstants {
 }
 
 sub main {
-    if (-f "xdefine" && !(@ARGV  && $ARGV[0] eq '--configure')) {
+    if (-f "xdefine" && !(@ARGV  && $ARGV[0] =~ /^--(?:configure|force)$/)) {
 	print qq[$0: The "xdefine" exists, skipping the configure step.\n];
-	print qq[("$^X $0 --configure" to force the configure step)\n];
+	print qq[Use "$^X $0 --configure"\n];
+	print qq[or: "$^X $0 --force\n];
+	print qq[to force the configure step.\n];
     } else {
 	print "Configuring Time::HiRes...\n";
 	1 while unlink("define");

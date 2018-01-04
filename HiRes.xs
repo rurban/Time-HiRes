@@ -1479,7 +1479,7 @@ PROTOTYPE: $$@
                       tot++;
                     }
                   } else {
-                    croak("futimens unimplemented in this platform");
+                    croak("utimensat unimplemented in this platform");
                   }
 #else  /* HAS_UTIMENSAT */
 	          croak("utimensat unimplemented in this platform");
