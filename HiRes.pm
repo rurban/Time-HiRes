@@ -9,10 +9,11 @@ use XSLoader ();
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw( );
-# More or less this same list is in Makefile.PL.  Should unify.
 our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 getitimer setitimer nanosleep clock_gettime clock_getres
 		 clock clock_nanosleep
+        # TODO: this list is a suprerset of the @names in
+	# Makefile.PL:doConstants(), automate this somehow.
 		 CLOCKS_PER_SEC
 		 CLOCK_BOOTTIME
 		 CLOCK_HIGHRES
@@ -21,6 +22,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 CLOCK_MONOTONIC_FAST
 		 CLOCK_MONOTONIC_PRECISE
 		 CLOCK_MONOTONIC_RAW
+		 CLOCK_MONOTONIC_RAW_APPROX
 		 CLOCK_PROCESS_CPUTIME_ID
 		 CLOCK_PROF
 		 CLOCK_REALTIME
@@ -37,6 +39,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 CLOCK_UPTIME_FAST
 		 CLOCK_UPTIME_PRECISE
 		 CLOCK_UPTIME_RAW
+		 CLOCK_UPTIME_RAW_APPROX
 		 CLOCK_VIRTUAL
 		 ITIMER_PROF
 		 ITIMER_REAL
@@ -50,7 +53,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 stat lstat utime
 		);
 
-our $VERSION = '1.9754';
+our $VERSION = '1.9755';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 

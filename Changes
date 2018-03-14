@@ -1,5 +1,17 @@
 Revision history for the Perl extension Time::HiRes.
 
+1.9755 [2018-03-14]
+ - adjust the error messages of tv_interval()
+ - the NV_1EX constants now cast to be NV so that
+   tv_interval() with long double builds does not
+   produce ugly results [rt.cpan.org #106456]
+ - add tests for tv_interval()
+ - centralize the mygettimeofday() logic
+ - make the mygettimeofday() a function instead of macro
+ - add the OS X 10.12+ clock_gettime() constants
+   CLOCK_MONOTONIC_RAW_APPROX CLOCK_UPTIME_RAW_APPROX
+ - regenerate the fallback files
+
 1.9754 [2018-02-16]
  - unify the gettimeofday() and time() forked code
    that had near identical code paths for MacOS Classic
