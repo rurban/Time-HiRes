@@ -1021,23 +1021,27 @@ nsec_without_unslept(struct timespec *sleepfor,
 #define UNSIGNED_TIME_T
 #endif
 
+#if defined(WIN32) || defined(CYGWIN_WITH_W32API)
+#  define mygettimeofday(tp, not_used) gettimeofday(tp, not_used)
+#else
 static int mygettimeofday(struct timeval *tv, struct timezone *tz)
 {                                 
   int status;
-#ifdef GETTIMEOFDAY_TZ
+#  ifdef GETTIMEOFDAY_TZ
   status = gettimeofday(tv, tz);
-#else
+#  else
   (void) tz;
   status = gettimeofday(tv, NULL);
-#endif
-#ifdef ADJUST_BY_TZ_MINUTES
-# ifndef GETTIMEOFDAY_TZ
-#  error "ADJUST_BY_TZ_MINUTES requires GETTIMEOFDAY_TZ"
-# endif
+#  endif /* ifdef GETTIMEOFDAY_TZ */
+#  ifdef ADJUST_BY_TZ_MINUTES
+#    ifndef GETTIMEOFDAY_TZ
+#      error "ADJUST_BY_TZ_MINUTES requires GETTIMEOFDAY_TZ"
+#    endif /* ifndef GETTIMEOFDAY_TZ */
   tv->tv_sec += tz->tz_minuteswest * 60;	/* adjust for TZ */
-#endif
+#  endif /* ADJUST_BY_TZ_MINUTES */
   return status;
 }
+#endif /* if defined(WIN32) || defined(CYGWIN_WITH_W32API) else */
 
 #ifdef UNSIGNED_TIME_T
 #define SvTIME(sv) SvUV(sv)
