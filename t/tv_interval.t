@@ -11,6 +11,7 @@ my $d1 = Time::HiRes::tv_interval([], []);
 is($d1, 0, "[] - [] = $d1");
 
 my $t0 = [Time::HiRes::gettimeofday()];
+Time::HiRes::sleep 0.1;
 my $t1 = [Time::HiRes::gettimeofday()];
 my $d2 = Time::HiRes::tv_interval($t1); # NOTE: only one arg. 
 
@@ -27,8 +28,12 @@ my $d4 = Time::HiRes::tv_interval($t0, $t1);
 # This test will fail if too much wallclock time passes between
 # the $t0 and $t1: this can happen in a heavily loaded system.
 my $d5 = ($t1->[0] - $t0->[0]) + ($t1->[1] - $t0->[1]) / 1e6;
-my $rd4d5 = $d5 / $d4;
-ok(abs($rd4d5 - 1) < 0.001, "[@$t1] - [@$t0] = $d4 ($d5, $rd4d5)");
+if ($d4 > 0) {
+  my $rd4d5 = $d5 / $d4;
+  ok(abs($rd4d5 - 1) < 0.001, "[@$t1] - [@$t0] = $d4 ($d5, $rd4d5)");
+} else {
+  is($d4, $d5, "$d4 == $d5");
+}
 
 # Then test errorneous inputs.
 

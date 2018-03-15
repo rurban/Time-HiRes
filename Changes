@@ -1,5 +1,12 @@
 Revision history for the Perl extension Time::HiRes.
 
+1.9756 [2018-03-14]
+ - division by zero in new test tv_interval.t [rt.cpan.org #124775]:
+   made the test pass even if the difference is zero, but also
+   made it practically impossible to ever be zero by adding
+   a sub-second sleep.
+ - remove comments from inside qw [rt.cpan.org #124777]
+
 1.9755 [2018-03-14]
  - adjust the error messages of tv_interval()
  - the NV_1EX constants now cast to be NV so that

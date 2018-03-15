@@ -9,11 +9,11 @@ use XSLoader ();
 our @ISA = qw(Exporter);
 
 our @EXPORT = qw( );
+# TODO: this list is a superset of the @names in
+# Makefile.PL:doConstants(), automate this somehow.
 our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 getitimer setitimer nanosleep clock_gettime clock_getres
 		 clock clock_nanosleep
-        # TODO: this list is a suprerset of the @names in
-	# Makefile.PL:doConstants(), automate this somehow.
 		 CLOCKS_PER_SEC
 		 CLOCK_BOOTTIME
 		 CLOCK_HIGHRES
@@ -53,7 +53,7 @@ our @EXPORT_OK = qw (usleep sleep ualarm alarm gettimeofday time tv_interval
 		 stat lstat utime
 		);
 
-our $VERSION = '1.9755';
+our $VERSION = '1.9756';
 our $XS_VERSION = $VERSION;
 $VERSION = eval $VERSION;
 
