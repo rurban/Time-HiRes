@@ -1,0 +1,80 @@
+# Build configuration for https://cirrus-ci.com/github/rurban/Time-Hires
+
+linux_task:
+  container:
+    image: gcc:latest
+    cpu: 4
+  name: Linux
+  install_script:
+  - apt update
+  - apt install -y perl make
+  - export LC_ALL=C
+  build_script: perl Makefile.PL && make -j4
+  test_script: TEST_JOBS=4 make -j4 test
+
+#freebsd11_task:
+#  container:
+#    image: freebsd-11-2-release-amd64
+#  name: FreeBSD 11
+#  auto_cancellation: $CIRRUS_BRANCH != 'master'
+#  #only_if: $CIRRUS_BRANCH =~ 'smoke/.*' || $CIRRUS_BRANCH =~ 'cirrus/.*' || $CIRRUS_BRANCH == 'master'
+#  install_script: pkg install -y perl5-devel
+#  build_script: perl Makefile.PL && make
+#  test_script: TEST_JOBS=4 make test
+
+freebsd12_task:
+  container:
+    image: freebsd-12-0-release-amd64
+    #cpu: 4
+  name: FreeBSD 12
+  auto_cancellation: $CIRRUS_BRANCH != 'master'
+  install_script: pkg install -y perl5-devel
+  build_script: perl Makefile.PL && make -j4
+  test_script: TEST_JOBS=4 make -j4 test
+  
+windows_task:
+  windows_container:
+    image: cirrusci/windowsservercore:2016
+  name: Windows
+  auto_cancellation: $CIRRUS_BRANCH != 'master'
+  install_script:
+  #- choco install -y --no-progress mingw
+  - choco install -y --no-progress strawberryperl
+  - choco install -y --no-progress cygwin
+  - C:\tools\cygwin\cygwinsetup.exe -q -P make,autoconf,automake,perl,libcrypt-devel,gcc-core,gcc-g++,binutils,libtool
+  mingw_script:
+  - PATH=C:\Strawberry\c\bin;C:\Strawberry\perl\bin;%PATH%
+  - perl Makefile.PL
+  - gmake
+  - gmake test
+  - gmake clean
+  cygwin_script:
+  - PATH=C:\tools\cygwin\bin;%PATH%
+  - C:\tools\cygwin\bin\bash.exe --login -c "cd '%cd%'; perl Makefile.PL; make; make test"
+
+#cygwin_task:
+#  windows_container:
+#    image: cirrusci/windowsservercore
+#  name: Cygwin
+#  auto_cancellation: $CIRRUS_BRANCH != 'master'
+#  install_script:
+#  - choco install -y --no-progress cygwin
+#  - C:\tools\cygwin\cygwinsetup.exe -q -P make,autoconf,automake,perl,gcc-core,binutils,libtool
+#  build_script:
+#  - C:\tools\cygwin\bin\bash.exe --login -c "cd '%cd%'; perl Makefile.PL; make"
+#  test_script:
+#  - C:\tools\cygwin\bin\bash.exe --login -c "cd '%cd%'; make test"
+
+darwin_task:
+  container:
+    image: high-sierra-xcode-9.4.1
+  env:
+    PATH: $PATH:/usr/local/bin
+  name: Darwin
+  install_script:
+  - brew update
+  - brew install perl
+  build_script:
+  - perl Makefile.PL
+  - make
+  test_script: make test

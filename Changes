@@ -2,6 +2,10 @@ Revision history for the Perl extension Time::HiRes.
 
 {{NEXT}}
 
+1.9760_02 [2019-04-07]
+ - merge with our old cperl fixes, but keep the Windows fixes
+   (skip 1.9759, smokes fine)
+
 1.9760 [2019-02-18]
  - make utime() available only if we have both fd and name setting
    [RT #133030]
